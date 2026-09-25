@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Fleur moiré</title>
+    <style>
+      :root {
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #e0622f;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      canvas {
+        width: min(100vw, 100vh);
+        height: min(100vw, 100vh);
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script>
+      const cv = document.getElementById("c");
+      const ctx = cv.getContext("2d");
+      const L = document.createElement("canvas"); // calque de travail pour un pétale
+      const lx = L.getContext("2d");
+      const S = 1000,
+        C = S / 2;
+      let ORANGE = "#e0622f",
+        TEAL = "#5ecfbf";
+
+      // réglages
+      const PETALS = 8;
+      const STEP = 5.5;
+      const DIST = 235,
+        RX = 225,
+        RY = 120; // forme du pétale
+      const NORMAL_SPEED = 2.2; // vitesse normale
+      const BOOST_SPEED = 8; // vitesse boost
+      let speed = NORMAL_SPEED; // vitesse courante (interpolée)
+      let speedTarget = NORMAL_SPEED; // cible vers laquelle on interpole
+      const SOFT = 0.55; // 0 = bord très flou, 1 = bord net
+
+      // résolution réelle de l'écran (traits nets)
+      function fit() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const size = Math.min(window.innerWidth, window.innerHeight);
+        cv.width = cv.height = L.width = L.height = Math.round(size * dpr);
+        ctx.setTransform(cv.width / S, 0, 0, cv.height / S, 0, 0);
+        lx.setTransform(cv.width / S, 0, 0, cv.height / S, 0, 0);
+      }
+      fit();
+      window.addEventListener("resize", fit);
+
+      // palettes et grain (reconstruit à chaque changement de palette)
+      const palettes = [
+        {
+          bg: "#e0622f",
+          stroke: "#5ecfbf",
+          grain: ["rgba(94,207,191,.45)", "rgba(224,98,47,.6)"],
+        },
+        {
+          bg: "#2f6fe0",
+          stroke: "#f2b84a",
+          grain: ["rgba(47,111,224,.45)", "rgba(242,184,74,.6)"],
+        },
+        {
+          bg: "#6a2de0",
+          stroke: "#e06f5a",
+          grain: ["rgba(106,45,224,.45)", "rgba(224,111,90,.6)"],
+        },
+      ];
+      let colorIndex = 0;
+
+      const N = document.createElement("canvas");
+      N.width = N.height = 200;
+      const nx = N.getContext("2d");
+      let grain = null;
+
+      function buildGrain() {
+        nx.clearRect(0, 0, 200, 200);
+        const gcolors = palettes[colorIndex].grain;
+        for (let i = 0; i < 9000; i++) {
+          nx.fillStyle = Math.random() < 0.5 ? gcolors[0] : gcolors[1];
+          nx.fillRect(Math.random() * 200, Math.random() * 200, 1, 1);
+        }
+        grain = ctx.createPattern(N, "repeat");
+      }
+
+      function applyPalette() {
+        ORANGE = palettes[colorIndex].bg;
+        TEAL = palettes[colorIndex].stroke;
+        buildGrain();
+        document.body.style.background = ORANGE;
+      }
+
+      applyPalette();
+
+      function draw(t) {
+        ctx.fillStyle = ORANGE;
+        ctx.fillRect(0, 0, S, S);
+
+        // interpole la vitesse vers la cible pour accélération/décélération
+        speed += (speedTarget - speed) * 0.04;
+
+        const rot = t * 0.00012 * speed;
+        const flow = (t * 0.02 * speed) % STEP;
+        const h = RX + 20; // demi-taille de la zone de travail d'un pétale
+
+        for (let k = 0; k < PETALS; k++) {
+          const a = rot + (k * Math.PI * 2) / PETALS;
+          const dx = Math.cos(a),
+            dy = Math.sin(a);
+          const px = C + dx * DIST,
+            py = C + dy * DIST;
+          const x0 = px - h,
+            y0 = py - h;
+
+          // 1) on dessine les ronds sur le calque (dans la zone du pétale seulement)
+          lx.save();
+          lx.beginPath();
+          lx.rect(x0, y0, 2 * h, 2 * h);
+          lx.clip();
+          lx.clearRect(x0, y0, 2 * h, 2 * h);
+          lx.strokeStyle = TEAL;
+          lx.lineWidth = 2.4;
+          const cx = C + dx * 45,
+            cy = C + dy * 45;
+          lx.beginPath();
+          for (let r = flow + 1; r < 520; r += STEP) {
+            lx.moveTo(cx + r, cy);
+            lx.arc(cx, cy, r, 0, Math.PI * 2);
+          }
+          lx.stroke();
+
+          // 2) masque doux : le bord du pétale s'estompe au lieu d'être coupé net
+          lx.globalCompositeOperation = "destination-in";
+          lx.translate(px, py);
+          lx.rotate(a);
+          lx.scale(RX, RY);
+          const g = lx.createRadialGradient(0, 0, 0, 0, 0, 1);
+          g.addColorStop(0, "rgba(0,0,0,1)");
+          g.addColorStop(SOFT, "rgba(0,0,0,1)");
+          g.addColorStop(1, "rgba(0,0,0,0)");
+          lx.fillStyle = g;
+          lx.fillRect(-2, -2, 4, 4);
+          lx.restore();
+
+          // 3) on colle le pétale flouté sur le dessin
+          const s = cv.width / S;
+          ctx.drawImage(
+            L,
+            x0 * s,
+            y0 * s,
+            2 * h * s,
+            2 * h * s,
+            x0,
+            y0,
+            2 * h,
+            2 * h,
+          );
+        }
+
+        // grain bitmap par-dessus (pixels agrandis, sans lissage)
+        ctx.save();
+        ctx.imageSmoothingEnabled = false;
+        ctx.scale(3, 3);
+        ctx.fillStyle = grain;
+        ctx.fillRect(0, 0, S / 3, S / 3);
+        ctx.restore();
+
+        // l'oeil au centre
+        ctx.fillStyle = ORANGE;
+        ctx.beginPath();
+        ctx.arc(C, C, 13, 0, Math.PI * 2);
+        ctx.fill();
+        for (const sg of [-1, 1]) {
+          ctx.beginPath();
+          ctx.arc(
+            C + Math.cos(rot) * 30 * sg,
+            C + Math.sin(rot) * 30 * sg,
+            6,
+            0,
+            Math.PI * 2,
+          );
+          ctx.fill();
+        }
+
+        requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
+
+      // contrôles clavier : 1 = bascule boost/normal, 2 = change la palette
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "1") {
+          speedTarget =
+            speedTarget === NORMAL_SPEED ? BOOST_SPEED : NORMAL_SPEED;
+        } else if (e.key === "2") {
+          colorIndex = (colorIndex + 1) % palettes.length;
+          applyPalette();
+        }
+      });
+    </script>
+  </body>
+</html>
