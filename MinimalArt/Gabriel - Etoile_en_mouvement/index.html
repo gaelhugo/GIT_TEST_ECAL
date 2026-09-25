@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Adaptation animée en code de Five Pointed Star with Color Bands de Sol LeWitt.">
+<title>Étoile en mouvement — Gabriel Toneto</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%231d2941'/%3E%3Cpath d='M32 6l7 19h19L43 37l6 20-17-12-17 12 6-20L6 25h19z' fill='%23db4949'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><h1>Étoile en mouvement</h1><span>ADAPTATION EN CODE · GABRIEL TONETO</span></header>
+<main>
+  <div class="artwork"><canvas id="art" aria-label="Des bandes colorées en forme d'étoile grandissent du centre vers l'extérieur en boucle"></canvas></div>
+  <section class="info">
+    <div class="label">Œuvre adaptée</div>
+    <h2>Une étoile naît au centre, puis grandit.</h2>
+    <p class="description">Chaque bande colorée est dessinée par le code. Les étoiles grandissent, tournent et se décalent légèrement les unes par rapport aux autres pour former une spirale. Une nouvelle étoile apparaît au milieu.</p>
+    <div class="controls"><button id="toggle" type="button">Pause</button><button id="restart" type="button">Recommencer</button><label class="setting" for="speed">Vitesse <input id="speed" type="range" min="0.4" max="2.5" step="0.1" value="1"></label><label class="setting" for="twist">Spirale <input id="twist" type="range" min="0" max="0.35" step="0.01" value="0.18"></label></div>
+    <p class="source">D’après Sol LeWitt, <em>Five Pointed Star with Color Bands</em> (1992). <a href="https://www.sollewittprints.org/artwork/lewitt-raisonne-1992-03/" target="_blank" rel="noopener">Voir la fiche de l’œuvre ↗</a> · <a href="assets/reference_capture.jpeg" target="_blank">Voir la capture fournie ↗</a></p>
+  </section>
+</main>
+<script src="script.js" defer></script>
+</body>
+</html>
