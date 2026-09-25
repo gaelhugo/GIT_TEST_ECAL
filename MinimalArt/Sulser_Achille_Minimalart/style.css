@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scene {
+  position: relative;
+  width: 580px;
+  height: 580px;
+}
+
+.cercle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 580px;
+  height: 580px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 90px solid black;
+  background: #c9cad8;
+}
+
+.flou {
+  filter: blur(30px);
+}
+
+.net {
+  --x: -9999px;
+  --y: -9999px;
+  --taille: 90px;
+
+  -webkit-mask-image: radial-gradient(
+    circle var(--taille) at var(--x) var(--y),
+    black 40%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle var(--taille) at var(--x) var(--y),
+    black 40%,
+    transparent 100%
+  );
+}
