@@ -1,0 +1,19 @@
+/* Le dessin conserve les proportions du frame Desktop - 1 de Figma. */
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #ffffff; }
+.frame {
+  position: relative;
+  width: min(100vw, 140.625vh, 1440px);
+  aspect-ratio: 45 / 32;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #ffffff;
+}
+#scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+#scene:active { cursor: grabbing; }
