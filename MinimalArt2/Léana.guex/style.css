@@ -1,0 +1,38 @@
+/* --bg = couleur du fond de la page (claire par défaut) */
+:root {
+    box-sizing: border-box;
+    --bg: #eee;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+:root[data-theme="dark"] {
+    --bg: #1b1b1b;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+/* flex + center = l'image est au milieu de l'écran */
+body {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* le dessin prend 96% de la hauteur, et garde ses proportions.
+     touch-action:none = sur mobile, le doigt ne fait pas défiler la page */
+svg {
+    height: 96%;
+    max-width: 96%;
+    width: auto;
+    touch-action: none;
+}
+
+path {
+    cursor: pointer;
+}
