@@ -1,0 +1,9 @@
+{
+  "name": "carres-bouncing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Animation interactive de carrés en HTML, CSS et JavaScript",
+  "scripts": {
+    "dev": "node server.js"
+  }
+}
