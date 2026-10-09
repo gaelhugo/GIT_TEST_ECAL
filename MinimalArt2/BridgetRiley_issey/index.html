@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#08080a" />
+    <title>Bridget Riley</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000000;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+      }
+
+      canvas {
+        display: block;
+        width: min(100vw, 100vh);
+        height: min(100vw, 100vh);
+      }
+    </style>
+    <script src="./sketch.js" defer></script>
+  </head>
+  <body>
+    <canvas aria-label="A curved white line divides a black field"></canvas>
+  </body>
+</html>
