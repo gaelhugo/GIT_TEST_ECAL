@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Op art – toile élastique</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg id="art" viewBox="0 5 934 999" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+  <defs>
+    <clipPath id="clip"><rect x="8" y="13" width="918" height="983"/></clipPath>
+  </defs>
+
+  <!-- le cadre gris (rectangle complet, 8 px visibles sur chaque côté) -->
+  <rect x="0" y="5" width="934" height="999" fill="#6f6f70"/>
+  <rect x="8" y="13" width="918" height="983" fill="#0f0f0f"/>
+  <!-- <g> = un groupe. Les 81 formes gris-bleu seront ajoutées ici par le JavaScript -->
+  <g id="g" clip-path="url(#clip)" fill="#b6bdc5"></g>
+</svg>
+
+<script src="shapes.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
